@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div dir="rtl">
 
-## Getting Started
+# درخت حساب‌ها (Hamiket Task)
 
-First, run the development server:
+یک صفحه‌ی درخت حساب‌ها با قابلیت باز و بسته شدن نودها و منوی کلیک راست، ساخته‌شده با **Next.js** و **Material UI**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+🔗 دمو: [لینک دیپلوی]
+
+## قابلیت‌ها
+
+- باز و بسته شدن هر نود با کلیک
+- منوی کلیک راست روی هر نود:
+  - **برش:** فقط برای نود بدون فرزند
+  - **کپی:** نود به همراه تمام زیرشاخه‌ها
+  - **پیست:** به‌عنوان زیرشاخه‌ی نودی که روی آن کلیک راست شده
+  - **حذف:** فقط برای نود بدون فرزند
+  - **افزودن زیرشاخه:** مودال با یک input برای عنوان نود
+- کدگذاری خودکار نودها (مثلاً `۱` ← `۱۰۱` ← `۱۰۱۰۱`) که بعد از جابه‌جایی و حذف خودکار به‌روز می‌شود
+- ذخیره‌ی درخت در `localStorage` (با دکمه‌ی «بازنشانی درخت»)
+- راست‌چین کامل (RTL) و فونت فارسی
+- بازخورد عملیات با Snackbar
+
+## تکنولوژی‌ها
+
+Next.js (App Router)، React، TypeScript، Material UI، Emotion
+
+
+
+> فایل فونت در مسیر `src/fonts/A-Iranian-Sans/Iranian Sans.ttf` قرار دارد.
+
+## ساختار پروژه
+
+```
+src/
+├─ app/                  صفحه و layout
+├─ components/           AccountTree، TreeNode، NodeContextMenu، AddNodeDialog
+├─ lib/                  treeUtils (توابع خالص روی درخت)، storage (localStorage)
+├─ data/                 داده‌ی اولیه‌ی درخت
+├─ theme/                تم MUI و ThemeRegistry (RTL)
+├─ types/                تایپ‌ها
+└─ fonts/                فایل فونت
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## تصمیم‌های فنی
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **State متمرکز:** تمام state در `AccountTree` است و `TreeNode` فقط نمایش و رویداد بالا می‌فرستد.
+- **توابع خالص و immutable:** عملیات روی درخت (`addChild`، `removeNode`، `cloneWithNewIds`) آبجکت جدید برمی‌گردانند و state قبلی را تغییر نمی‌دهند.
+- **کامپوننت بازگشتی:** `TreeNode` خودش را برای فرزندان رندر می‌کند و عمق درخت محدودیتی ندارد.
+- **کدِ نود محاسبه می‌شود، ذخیره نمی‌شود:** بعد از حذف یا جابه‌جایی نیازی به به‌روزرسانی دستی کدها نیست.
+- **کپی با id جدید:** هر نودِ کپی‌شده id یکتا می‌گیرد تا بتوان چندبار پیست کرد.
+- **برش:** نود اول از جای قبلی حذف و بعد در مقصد اضافه می‌شود؛ پیست نود داخل خودش مسدود است.
+- **خطوط اتصال با CSS خالص** و ویژگی‌های logical (`inset-inline-start`) تا با RTL درست کار کنند.
+- **RTL در سه لایه:** `dir="rtl"` روی HTML، `direction: 'rtl'` در تم و `@mui/stylis-plugin-rtl`.
+- **فونت با `next/font/local`** (self-host، بدون پرش چیدمان) و اتصال به تم از طریق متغیر CSS.
+- **localStorage بعد از mount خوانده می‌شود** تا ناهماهنگی hydration پیش نیاید.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## نکات
 
-## Learn More
+- ریشه‌ی درخت («حساب‌های اصلی») قابل برش، کپی و حذف نیست.
+- حذف بدون تأیید انجام می‌شود (در صورت نیاز با «بازنشانی درخت» می‌توان به حالت اولیه برگشت).
+- تست خودکار ندارد.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</div>
